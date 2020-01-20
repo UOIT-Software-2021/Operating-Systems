@@ -1,0 +1,1 @@
+find . -name 'tutorial*' 2> errors.log
