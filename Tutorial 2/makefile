@@ -11,4 +11,4 @@ task4: task4.c
 	gcc -o task4 task4.c
 
 task5: task5.c
-	gcc -o task5 task5.c
+	gcc -o task5 task5.c -lm
