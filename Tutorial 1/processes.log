@@ -1,0 +1,5 @@
+  PID TTY           TIME CMD
+11983 ttys000    0:00.02 /bin/zsh -l
+12200 ttys001    0:00.02 /bin/zsh -l
+12356 ttys001    0:00.00 /bin/bash /Users/avdonr/Documents/GitKraken/Operating-Systems/Tutorial 1/question5.sh
+12361 ttys001    0:00.00 ps -a
