@@ -12,10 +12,14 @@ void *goodbye() {
 }
 
 pthread_t thread1, thread2;
+void *status;
 
 int main() {
-	printf("%d \n", pthread_create(&thread1, NULL, hello_world, (void*)0)); 
-    printf("%d \n", pthread_create(&thread2, NULL, goodbye, 1)); 
+	pthread_create(&thread1, NULL, hello_world, (void*)0); 
+    pthread_create(&thread2, NULL, goodbye, (void*)1); 
 
+	pthread_join(thread1, &status);
+	pthread_join(thread2, &status);
+	
 	return 0;
 }
