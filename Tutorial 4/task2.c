@@ -13,7 +13,7 @@ void *status;
 
 int main(int argc, const char* argv[])
 {
-    double grade1,grade2,grade3,grade4,grade5;
+    double grade1, grade2, grade3, grade4, grade5;
     printf("Enter first grade: ");
     scanf("%lf", &grade1);
     printf("Enter second grade: ");
