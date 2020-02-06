@@ -70,9 +70,9 @@ int main()
 
 	printf("Enter fifth grade: ");
     scanf("%lf", &grade);
-    printf("Enter fifth Student Name: ");
+    printf("Enter fifth Student ID: ");
 	scanf("%lf", &studentID);
-	printf("Enter fifth Student ID: ");
+	printf("Enter fifth Student Name: ");
 	scanf("%s", &studentName);
 
 	stu4.studentID = &studentID;
