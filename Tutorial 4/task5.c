@@ -22,11 +22,12 @@ void read_grades()
 }
 
 void save_bellcurve(double grade){
-	
+	total_grade += grade;
+	total_bellcurve += bellcurve(grade);
 }
 
-void *bellcurve(int grade) {
-	double curved = grade*1.5;
+double *bellcurve(double grade) {
+	return (double)1.5 * grade;
 }
 
 int main()
