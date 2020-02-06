@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 #include <stdlib.h>
 #include <stdio.h>
 #include <pthread.h>
@@ -11,12 +10,6 @@ void *bellcurve(void *grade) {
 
 pthread_t thread1, thread2, thread3, thread4, thread5;
 void *status;
-=======
-#define _XOPEN_SOURCE 600 
-#include <stdlib.h>
-#include <stdio.h>
-#include <pthread.h>
->>>>>>> Stashed changes
 
 int main()
 {
