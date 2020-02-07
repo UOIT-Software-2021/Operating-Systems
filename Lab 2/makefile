@@ -1,2 +1,2 @@
-minishell: shell.h myshell.c
-	gcc -Wall shell.h shell.c -o shell
+myshell: shell.h myshell.c
+	gcc -Wall shell.h myshell.c -o myshell
