@@ -22,27 +22,26 @@ int main (int argc, char *argv[])
 		char allWhiteSpace = 1;
 		while (allWhiteSpace){
 			//get command from user or from batch file
-			input[0]=' ';
+			//input[0]=' ';
 			if (argc == 1){
-				
+				input[0]='\n';
 				printf("%s/myshell $ ", pwd);
 				
 				//read entire line
-				scanf("%[^\n]%*c", input);
-				//printf("%d %lu\n",input[0], strlen(input));
-				//return 0;			
+				fgets(input, 512, stdin);
 			} else {
-				if (fscanf(batchptr, "%[^\n]%*c", input) == EOF) {
+				if (fgets(input, 512, batchptr) == NULL) {
 					return 0;//quit shell if at end of batch file
 				}
 			}
 			for (int i =0; i < strlen(input); i++){
-				if (!isspace(input[i])&&!(input[0]==1)) {
+				if (!isspace(input[i])) {
 					allWhiteSpace = 0;
 					break;
 				}
 			}
 		}
+		input[strlen(input)-1]=0;
 		//copy of input to use as backup
 		char inputCopy[512];
 		strcpy(inputCopy, input);
@@ -110,7 +109,6 @@ int main (int argc, char *argv[])
 		
 		//restore input
 		strcpy(input, inputCopy);
-		printf("ln 113 %s.%lu\n", command, strlen(command));
 		if (strcmp(command, "quit")==0){
 			//exit loop
 			free(command);	
