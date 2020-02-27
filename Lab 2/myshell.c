@@ -31,6 +31,7 @@ int main (int argc, char *argv[])
 				fgets(input, 512, stdin);
 			} else {
 				if (fgets(input, 512, batchptr) == NULL) {
+					fclose(batchptr);
 					return 0;//quit shell if at end of batch file
 				}
 			}
