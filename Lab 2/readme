@@ -1,6 +1,7 @@
 Lab 2 SOFE 3950 - The program myshell.c is a small shell program.
 
-You can compile the shell program by typing 'make myshell', this is only confirmed to work on linux operating systems (18.04 Ubuntu)
+You can compile the shell program by typing 'make myshell', 
+myshell is only confirmed to work on linux based operating systems (18.04 Ubuntu)
 
 You can invoke the shell program with a command by typing ".\myshell <command>".
 
@@ -10,38 +11,38 @@ will append to the output destination if it already exists while > will truncate
 
 The supported commands are:
 
-cd <directory> (finished)
+cd <directory>
 
     Change the current default directory to <directory>. 
     If the <directory> argument is not present, report the current directory. 
     If the directory does not exist an appropriate error should be reported. 
     This command should also change the PWD environment variable.
 
-clr (finished)
+clr
 
     Clear the screen.
 
-dir <directory> (finished)
+dir <directory>
 
     List the contents of directory <directory>.
 
-environ (finished)
+environ 
 
     List all the environment strings.
 
-echo <comment> (finished)
+echo <comment>
 
     Display <comment> on the display followed by a new line 
     (multiple spaces/tabs may be reduced to a single space).
 
-help (finished)
+help 
 
     Display this help manual using the more filter. 
 
-pause (finished)
+pause 
 
     Pause operation of the shell until 'Enter' is pressed.
 
-quit (finished)
+quit 
 
     Quit the shell.
