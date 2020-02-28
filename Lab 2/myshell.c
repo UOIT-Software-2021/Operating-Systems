@@ -5,11 +5,11 @@
 #include <ctype.h>
 #include "myshell.h"
 
-void deleteEndStr (char* str){
+void deleteEndStr (char* str, char del){
 
     char *toDel = &str[strlen(str)];
 
-    while (toDel > str && *toDel != '/'){
+    while (toDel > str && *toDel != del){
 		toDel--;	
 	}
     
@@ -140,7 +140,7 @@ int main (int argc, char *argv[])
 				printf("%s\n", pwd);
 			}
 			else if (strcmp(arguments[0],"..")==0){
-				deleteEndStr(pwd);
+				deleteEndStr(pwd,'/');
 			}
 			else if(access(arguments[0], F_OK) != -1){
 				strcat(pwd, "/");
