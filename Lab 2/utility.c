@@ -10,7 +10,7 @@
 
 //fork and execute the specified command using the child process
 //wait for command to complete before proceeding
-int executeCommand(const char *pathName, char *const argv[],int notbgprocess){
+int executeCommand(const char *pathName, char *const argv[], int notbgprocess){
 	pid_t pid = fork();
 
 	//parent: wait
@@ -39,6 +39,18 @@ int executeCommand(const char *pathName, char *const argv[],int notbgprocess){
 	
 }
 
+void help(){
+	int c;
+	FILE *file;
+	file = fopen("readme", "r");
+	if (file) {
+    	while ((c = getc(file)) != EOF)
+        putchar(c);
+    fclose(file);
+	}
+}
+
+/* 
 void pauseShell(){
     char temp;
     printf("myshell: paused: press enter to resume ");
@@ -47,13 +59,14 @@ void pauseShell(){
     do {
         scanf("%c",&temp);
     } while(temp!='\n');
-}
+} */
 
 int checkIfDirectory(const char *directoryName){
 	struct stat directoryStat;
 	stat(directoryName, &directoryStat);
 	return S_ISREG(directoryStat.st_mode);
 }
+
 //read the contents of the current directory
 int readDirectoryContent(const char *directoryName){
 	//pointer for 	dirent structure
@@ -92,7 +105,7 @@ void pauseShell(void){
 
 	//scan for single characters until user presses enter            
 	do {
-	scanf("%c",&temp);
+		scanf("%c",&temp);
 	} while(temp!='\n');
 }
 
