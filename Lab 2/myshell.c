@@ -60,7 +60,7 @@ int main (int argc, char *argv[])
 		char allWhiteSpace = 1;
 
 		//hold copies of stdin or out if needed		
-		int stdin_copy, stdout_copy;	
+		int stdin_copy = 0, stdout_copy = 0;	
 		
 		//set certain execution statuses
 		int restoreoriginalstdin = 0, restoreoriginalstdout = 0, notbgprocess = 1;
