@@ -39,6 +39,16 @@ int executeCommand(const char *pathName, char *const argv[],int notbgprocess){
 	
 }
 
+void pauseShell(){
+    char temp;
+    printf("myshell: paused: press enter to resume ");
+    
+    //scan for single characters until user presses enter            
+    do {
+        scanf("%c",&temp);
+    } while(temp!='\n');
+}
+
 int checkIfDirectory(const char *directoryName){
 	struct stat directoryStat;
 	stat(directoryName, &directoryStat);
