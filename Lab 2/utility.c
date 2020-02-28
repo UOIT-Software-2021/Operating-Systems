@@ -27,6 +27,20 @@ int executeCommand(const char *pathName, char *const argv[]){
 
 	return 0;
 }
+void pauseShell(){
+    char temp;
+    printf("myshell: paused: press enter to resume ");
+    
+    //scan for single characters until user presses enter            
+    do {
+        scanf("%c",&temp);
+    } while(temp!='\n');
+}
+
+void clearScreen() {
+  const char *CLEAR_SCREEN_ANSI = "\e[1;1H\e[2J";
+  write(STDOUT_FILENO, CLEAR_SCREEN_ANSI, 12);
+}
 
 //read the contents of the current directory
 int readDirectoryContent(const char *directoryName){
@@ -50,4 +64,5 @@ int readDirectoryContent(const char *directoryName){
 	closedir(dir);
 
 	return 0;
-}	
+}
+
