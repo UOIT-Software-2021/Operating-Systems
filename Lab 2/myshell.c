@@ -5,6 +5,20 @@
 #include <ctype.h>
 #include "myshell.h"
 
+void deleteEndStr (char* str){
+
+    char *toDel = &str[strlen(str)];
+
+    while (toDel > str && *toDel != '/'){
+		toDel--;	
+	}
+    
+    if (*toDel== '/'){
+		*toDel= '\0';
+	}
+
+    return;
+}
 
 #define test 1
 int main (int argc, char *argv[])
@@ -121,12 +135,17 @@ int main (int argc, char *argv[])
 		} 
 
 		else if (strcmp(command, "cd")==0){
-			token = strtok(NULL, " ");
+			token = strtok(arguments[0], " ");
 			if (token == NULL){
 				printf("%s\n", pwd);
 			}
-			else {
-				//actually change directory
+			else if (strcmp(arguments[0],"..")==0){
+				deleteEndStr(pwd);
+			}
+			else
+			{
+				strcat(pwd, "/");
+				strcat(pwd, token); 
 			}
 		} 
 
