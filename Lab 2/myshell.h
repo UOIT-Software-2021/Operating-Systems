@@ -5,3 +5,4 @@ int readDirectoryContent(const char *directoryName);
 
 //define other public functions here
 void pauseShell();
+void clearScreen();
