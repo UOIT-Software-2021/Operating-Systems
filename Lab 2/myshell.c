@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <ctype.h> 
+#include <ctype.h>
 #include "myshell.h"
+
 
 #define test 1
 int main (int argc, char *argv[])
@@ -130,11 +131,10 @@ int main (int argc, char *argv[])
 		} 
 
 		else if (strcmp(command, "clr")==0){
-			//clear screen
+			clearScreen();
 		} 
 
 		else if (strcmp(command, "dir")==0){
-			//print directory contents
 			readDirectoryContent(pwd);
 		} 
 
@@ -155,7 +155,7 @@ int main (int argc, char *argv[])
 		}
 		
 		else if (strcmp(command, "pause")==0){
-			//pause (should be easy enough)
+			pauseShell();
 		} 
 		else if(strlen(command)>0){
 			//attempt to execute the command
@@ -172,4 +172,3 @@ int main (int argc, char *argv[])
 
 	return 0;
 }
-
