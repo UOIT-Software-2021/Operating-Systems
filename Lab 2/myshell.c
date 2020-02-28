@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <ctype.h> 
+#include <fcntl.h>
 #include "myshell.h"
 
 extern char **environ;
@@ -49,21 +50,15 @@ int main (int argc, char *argv[])
 	FILE *batchptr;
 	if (argc > 1){
 		batchptr = fopen(argv[1], "r");
-	} else {
+	} /*else {
 		//clear screen if human user
 		clearScreen();
-	}
+	}*/
 	
 	while (1) {
 		//stores command from user
 		char input[512];
 		char allWhiteSpace = 1;
-
-		//hold copies of stdin or out if needed		
-		int stdin_copy = 0, stdout_copy = 0;	
-		
-		//set certain execution statuses
-		int restoreoriginalstdin = 0, restoreoriginalstdout = 0, notbgprocess = 1;
 		//do not progress if buffer only has white space		
 		while (allWhiteSpace){
 			//get command from user or from batch file
@@ -98,13 +93,16 @@ int main (int argc, char *argv[])
 		int argCount = 0;
 		char *token = strtok(input, " ");
 
+		char *last;
 		while(token != NULL){
 			argCount++;
-
+			last = strdup(token);
 			token = strtok(NULL, " ");			
 						
 	    	}
-
+	
+		
+		
 		//restore input
 		strcpy(input, inputCopy);
 		//reset token for second pass
@@ -116,84 +114,122 @@ int main (int argc, char *argv[])
 		//needed in the case of io redirection		
 		char *infname;	
 		char *outfname;
-
+		//hold copies of stdin or out if needed or to redirect to stdin or stdout		
+		int stdincopy, stdoutcopy, out = -230, in = -432;	
+		//set certain execution statuses
+		int restoreoriginalstdin = 0, restoreoriginalstdout = 0, notbgprocess = 1;
+		
 		//first token is the desired command
 		command = strdup(token);
 		//get next token
 		token = strtok(NULL, " ");
 		int tempargcount = 0;
+		
+		if (strcmp(last, "&")==0){
+			//handle process in the background
+			argCount -=2;
+			notbgprocess = 0;			
+		}
+		free(last);
 		for (int i = 0; i < argCount; i++){
 			
 			//get next token
 			if (token != NULL){
-				if (strcmp(token, "<")==0){
+				if (strcmp(token, "<")==0&& !restoreoriginalstdin){
+				
 					token = strtok(NULL, " ");
+					i++;					
 					infname = strdup(token);
-					if( access( infname, F_OK|R_OK ) != -1 && !restoreoriginalstdin) {
-						//dup2(stdin_copy, 0);
-						
-					      	freopen(infname, "r", stdin);
-						  
-				      		restoreoriginalstdin = 1;
+					int in = open(infname,O_RDONLY);
+					
+					if(in) {
+						stdincopy = dup(fileno(stdin));
+						if (-1 == dup2(in, fileno(stdin))) { 
+							perror("cannot redirect stdin");
+							command = strdup("");
+							free(infname);
+							close(in);
+						} else {
+				      			restoreoriginalstdin = 1;
+						}
 					} else {
 						command = strdup("");
+						free(infname);
 						perror("myshell: cannot open file to read");	 
 					}
 				}
-				else if (strcmp(token, ">")==0){
+				else if (strcmp(token, ">")==0 && !restoreoriginalstdout){
 					token = strtok(NULL, " ");
+					i++;
 					outfname = strdup(token);
-					printf("%s\n",outfname);
-					if((access(outfname, W_OK ) != -1 || access(outfname, F_OK) == -1)&& !restoreoriginalstdout) {
-						//dup2(stdout_copy, 1);
-						
-					      	freopen(outfname, "w", stdout);
-						//freopen("test.txt", "w", stdout);  
+					int out = open(outfname,O_WRONLY|O_CREAT|O_TRUNC, 0600);
 					
-						restoreoriginalstdout = 1;
+					if(out) {
+						stdoutcopy = dup(fileno(stdout));
+						if (-1 == dup2(out, fileno(stdout))) { 
+							perror("cannot redirect stdout");
+							command = strdup("");
+							free(outfname);
+							close(out);
+						} else {
+				      			restoreoriginalstdout = 1;
+						}
 					} else {
-						strcpy(command, "");
+						command = strdup("");
+						free(outfname);
 						perror("myshell: cannot open file to write");	 
 					}
 				}
-				else if (strcmp(token, ">>")==0){	
+				else if (strcmp(token, ">>")==0 && !restoreoriginalstdout){	
 					token = strtok(NULL, " ");
+					i++;					
 					outfname = strdup(token);
-					if(( access(outfname, W_OK ) != -1 || access(outfname, F_OK) == -1)&& !restoreoriginalstdout) {
-						//dup2(stdout_copy, 1);
-					      	freopen(outfname, "a", stdout);  
-				      		restoreoriginalstdout = 1;
+					int out = open(outfname,O_WRONLY|O_CREAT|O_APPEND, 0600);
+					
+					if(out) {
+						stdoutcopy = dup(fileno(stdout));
+						if (-1 == dup2(out, fileno(stdout))) { 
+							perror("cannot redirect stdout");
+							command = strdup("");
+							free(outfname);
+							close(out);
+						} else {
+				      			restoreoriginalstdout = 1;
+						}
 					} else {
-						strcpy(command, "");
-						perror("myshell: cannot open file append"); 
-					
+						command = strdup("");
+						free(outfname);
+						perror("myshell: cannot open file to append");	 
 					}
-				}
-				else if (strcmp(token, "&")==0){
-					//handle process in the background
-					notbgprocess = 0;
-					
 				}
 				else {
 					//get next argument
 					arguments[i] = strdup (token);
 					tempargcount++;
-								
 		    		}
+				
 
 				token = strtok(NULL, " ");			
 			}
  
 			//all tokens have been read: set remaining args to null
 			else {
-				//last arg should be null when using exec
-				arguments[i]=NULL;
-				tempargcount++;
 				break;
 			}			
 		}
+		
 		argCount = tempargcount;
 
+		//append NULL if needed
+		if (argCount > 0){
+			if (arguments[argCount-1] != NULL){
+				arguments[argCount] = NULL;
+				argCount+= 1;
+			}
+		} else {
+			arguments[0] = NULL;
+			argCount = 1;
+		}	
 		//long if-else chain to choose appropriate command
 		if (strcmp(command, "quit")==0){
 			//exit loop: then exit shell
@@ -214,7 +250,7 @@ int main (int argc, char *argv[])
 				chdir(arguments[0]);
 				getcwd(pwd,256);
 			} else {
-				printf("Directory does not exist!\n");
+				perror("Directory does not exist!\n");
 			}
 		} 
 
@@ -229,7 +265,7 @@ int main (int argc, char *argv[])
 				readDirectoryContent(pwd);
 			} else {
 				if( readDirectoryContent(arguments[0])) {
-					printf("myshell: error: could not open specified directory\n");
+					perror("myshell: error: could not open specified directory\n");
 				}
 			}
 		
@@ -247,7 +283,7 @@ int main (int argc, char *argv[])
 		
 		else if (strcmp(command, "help")==0){
 			//display help manual
-			readMan(manualPath);
+			help(manualPath);
 		}
 		
 		else if (strcmp(command, "pause")==0){
@@ -256,9 +292,11 @@ int main (int argc, char *argv[])
 		} 
 		else if(strlen(command)>0){
 			//attempt to execute the command
-			if (executeCommand(command, arguments, notbgprocess)== -1){
-				printf("myshell: %s: Could not execute\n", command);
+						
+			if (executeCommand(command,argCount, arguments, notbgprocess)== -1){
+				perror("myshell: error: Could not execute\n");
 			}
+			
 		}
 
 		//free variables
@@ -271,22 +309,27 @@ int main (int argc, char *argv[])
 
 		//restore stdin and stdout
 		if(restoreoriginalstdin){
+			//flush and close stream
 			fflush(stdin);  
-              		fclose(stdin);
-			free(infname);              		
-			stdin = fdopen(stdin_copy, "r");
+              		close (in);
+			//free memory 
+			free(infname);
+
+			//restore stdin              		
+			dup2(stdincopy, fileno(stdin));
+			close (stdincopy);							
 			restoreoriginalstdin = 0;
 		}
 		if(restoreoriginalstdout){
+			//flush and close stream
 			fflush(stdout);  
-              		fclose(stdout);
-
+              		close (out);
+			//free memory
 			free(outfname);
             		
-			stdout = fdopen(stdout_copy, "w");
-			dup2(stdout_copy, 1);
-
-			close(stdout_copy);
+			//restore stdout			
+			dup2(stdoutcopy, fileno(stdout));
+			close(stdoutcopy);
 			restoreoriginalstdout = 0;
 		}
 
