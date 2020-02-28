@@ -142,10 +142,11 @@ int main (int argc, char *argv[])
 			else if (strcmp(arguments[0],"..")==0){
 				deleteEndStr(pwd);
 			}
-			else
-			{
+			else if(access(arguments[0], F_OK) != -1){
 				strcat(pwd, "/");
 				strcat(pwd, token); 
+			} else {
+				printf("Directory does not exist!\n");
 			}
 		} 
 
