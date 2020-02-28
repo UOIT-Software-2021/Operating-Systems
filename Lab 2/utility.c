@@ -62,9 +62,13 @@ void pauseShell(){
 } */
 
 int checkIfDirectory(const char *directoryName){
-	struct stat directoryStat;
-	stat(directoryName, &directoryStat);
-	return S_ISREG(directoryStat.st_mode);
+	DIR* dir = opendir(directoryName);
+	if (dir) {
+	    closedir(dir);
+		return 1;
+	} else {
+		return 0;
+	}
 }
 
 //read the contents of the current directory
