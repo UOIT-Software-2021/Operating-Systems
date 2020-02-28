@@ -10,61 +10,83 @@
 
 //fork and execute the specified command using the child process
 //wait for command to complete before proceeding
-int executeCommand(const char *pathName, char *const argv[], int notbgprocess){
-	pid_t pid = fork();
-
-	//parent: wait
-	int wstatus;
-	if (pid != 0){
-		if (notbgprocess){
-			//return child exit status
-			char es = waitpid(pid, &wstatus, 0);			
-			if( WIFEXITED(wstatus) ) {
-				es = WEXITSTATUS(wstatus);
-			}
-			return es;
+int executeCommand(char *pathName, int argCount, char *const argv[],int notbgprocess){
+	char *arguments[argCount+1];
+	
+	arguments[0] = pathName;
+	for (int i = 1; i < argCount+1; i++){
+		arguments[i]=argv[i-1];
+	}
+	
+	if (notbgprocess){
+		pid_t pid = fork();
+		//parent: wait
+		int wstatus;
+		if (pid > 0){
+			
+				//return child exit status
+				char es = 0;
+				waitpid(pid, &wstatus, 0);			
+				if( WIFEXITED(wstatus) ) {
+					es = WEXITSTATUS(wstatus);
+				}
+				return es;
+			
+		} 
+		//child: execute function	
+		else {
+			
+			int status = execv(pathName, arguments);
+					
+			//should only be reached if an error occurs		
+			if (status == -1){
+				exit(-1);//release child process
+			}		
 		}
-	} 
-	//child: execute function	
-	else {
-		
-		int status = execv(pathName, argv);
+	} else {
+		pid_t pid = fork();
+		//parent has things to do: return
+		if (pid > 0){
+			return 0;
+		}
+		else {
+			pid_t pid2 = fork();
+			//parent: wait
+			int wstatus;
+			if (pid2 > 0){
 				
-		//should only be reached if an error occurs		
-		if (status == -1){
-			exit(-1);//release child process
-		}		
+				//return child exit status
+				char es = 0;
+				waitpid(pid2, &wstatus, 0);			
+				if( WIFEXITED(wstatus) ) {
+					es = WEXITSTATUS(wstatus);
+				}
+				if (es == -1){
+					perror("myshell: error: Could not execute");
+				}
+				exit(0);
+				
+			} 
+			//child: execute function	
+			else {
+				
+				int status = execv(pathName, arguments);
+						
+				//should only be reached if an error occurs		
+				if (status == -1){
+					exit(-1);//release child process
+				}		
+			}
+		}
 	}
 	return 0;
 	
 }
 
-void help(){
-	int c;
-	FILE *file;
-	file = fopen("readme", "r");
-	if (file) {
-    	while ((c = getc(file)) != EOF)
-        putchar(c);
-    fclose(file);
-	}
-}
-
-/* 
-void pauseShell(){
-    char temp;
-    printf("myshell: paused: press enter to resume ");
-    
-    //scan for single characters until user presses enter            
-    do {
-        scanf("%c",&temp);
-    } while(temp!='\n');
-} */
-
 int checkIfDirectory(const char *directoryName){
 	DIR* dir = opendir(directoryName);
 	if (dir) {
-	    closedir(dir);
+	    	closedir(dir);
 		return 1;
 	} else {
 		return 0;
@@ -109,7 +131,7 @@ void pauseShell(void){
 
 	//scan for single characters until user presses enter            
 	do {
-		scanf("%c",&temp);
+	scanf("%c",&temp);
 	} while(temp!='\n');
 }
 
@@ -129,14 +151,13 @@ void echo(int argc, char *args[]){
 	printf("\n");
 }
 
-void readMan(char *path){
-	printf("\n");
-	FILE *fp;
-	fp = fopen(path, "r");
-	char buffer[256];
-	while(fgets(buffer, 256, fp) != NULL){
-		printf("%s", buffer);
+void help(char *path){
+	int c;
+	FILE *file;
+	file = fopen(path, "r");
+	if (file) {
+    		while ((c = getc(file)) != EOF)
+        		putchar(c);
+    		fclose(file);
 	}
-	fclose(fp);
-	printf("\n");
 }	
