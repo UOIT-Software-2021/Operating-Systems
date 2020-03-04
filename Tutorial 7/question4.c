@@ -19,11 +19,13 @@ int main(void)
     else 
     {
         pid_t pid_process = getpid();
+        int status;
         char * argv_list[] = {"process",NULL}; 
         execv("process", argv_list);
         wait(5);
-        kill(pid_process, SIGINT);
+        kill(pid_process,SIGTSTP);
+        wait(10);
+        kill(pid_process,SIGCONT);
+        exit(0);
     }
 }
-
-
