@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <signal.h>
-#include <string.h>
 #include <sys/types.h>
 
 struct queue *headPtr, head;
@@ -20,32 +19,17 @@ struct queue {
 };
 
 //Adds a node to the tail
-void push(struct proc process) {
-    struct queue newNode;
-    newNode.process = process;
-    *traverse(head, 200).linkedList = newNode;
+void push(struct proc process){
+    
 }
 
 //pops a node from the front of the head and reads it
 struct proc pop() {
-    *traverse(head, 200).linkedList = NULL;
+
 }
 
-//used to find a node in a chain of linked lists
-struct queue traverse(struct queue head, int index){
-    struct queue currIndex = head;
-    int i = 0;
-    do {
-        if (i < index){
-            currIndex = *currIndex.linkedList;
-        }
-        else if (i >= index){
-            return currIndex;
-        }
-        i++;
-    } while(currIndex.linkedList != NULL);
-
-    return currIndex;
+struct queue traverse(){
+    
 }
 
 int delete_pid(int pid){
@@ -88,23 +72,30 @@ int main(void)
 
         printf("%s", line);
 
-        //read until your first comma
+        
         for (i = 0; i < read; i++){
             if ((!line[iterationID]) == ','){
                 buffer[i] = line[iterationID];
                 printf(line[iterationID]);
             }
             else {
-                buffer[i] = "\0";
                 break;
             }
             iterationID++;
         }
 
-        strcpy(procs[j].name, buffer);       
+        int k;
+        for (k = 0; k < 128; k++){
+            if (buffer[k] != NULL){
+                procs[j].name[k] = buffer[k];
+            }
+            else {
+                break;
+            }
+        }        
         buffer[128] = "";
 
-        /*
+        
         for (; i < (unsigned int)read; i++){
             if ((!line[iterationID]) == ','){
                 buffer[i] = line[iterationID];
@@ -117,7 +108,6 @@ int main(void)
         
         //probably will throw an error, 
         //will need to find a way to allow nubmers to be taken into account
-        int k;
         for (k = 0; k < 128; k++){
             if (buffer[k] != NULL){
                 procs[j].priority[k] = buffer[k];
@@ -138,7 +128,6 @@ int main(void)
             iterationID++;
         }
 
-        int k;
         for (k = 0; k < 128; k++){
             if (buffer[k] != NULL){
                 procs[j].pid[k] = buffer[k];
@@ -159,7 +148,6 @@ int main(void)
             iterationID++;
         }
 
-        int k;
         for (k = 0; k < 128; k++){
             if (buffer[k] != NULL){
                 procs[j].runtime[k] = buffer[k];
@@ -171,7 +159,7 @@ int main(void)
         buffer[128] = "";
 
         j++;
-        */
+        
     }
 
     //printf(procs[0].name);
