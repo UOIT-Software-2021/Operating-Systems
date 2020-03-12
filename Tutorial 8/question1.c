@@ -67,6 +67,7 @@ int main (void) {
         char *token;
         token = strtok(input,",");
         int loop = 0;
+        int total = 0;
         while (token != NULL) {
             if (loop == 0){
                 strcpy(proc1.parent,token);
@@ -85,7 +86,13 @@ int main (void) {
                 loop++;
             }
             token = strtok(NULL, ",");
+            total += 1;
         }
-        
+        for (int i = 0; i > total; i++){
+            insert(i,proc1.parent);
+            insert(i,proc1.name);
+            insert(i,proc1.priority);
+            insert(i,proc1.memory);
+        }
     }
 }
