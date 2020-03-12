@@ -60,6 +60,7 @@ insert(int key, struct proc_tree **leaf) {
 
 int main (void) {
     struct proc proc1;
+    struct proc_tree tree1;
     FILE *file = fopen("process_tree.txt", "r");
     char input[30];
     while(fscanf(file,"%s",input) != EOF){
@@ -85,5 +86,6 @@ int main (void) {
             }
             token = strtok(NULL, ",");
         }
+        
     }
 }
