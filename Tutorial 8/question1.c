@@ -59,7 +59,7 @@ insert(int key, struct proc_tree **leaf) {
 }
 
 int main (void) {
-    struct proc proc1;
+    struct proc proc1, proc2, proc3, proc4, proc5, proc6, proc7;
     struct proc_tree tree1;
     FILE *file = fopen("process_tree.txt", "r");
     char input[30];
@@ -67,7 +67,6 @@ int main (void) {
         char *token;
         token = strtok(input,",");
         int loop = 0;
-        int total = 0;
         while (token != NULL) {
             if (loop == 0){
                 strcpy(proc1.parent,token);
@@ -86,13 +85,10 @@ int main (void) {
                 loop++;
             }
             token = strtok(NULL, ",");
-            total += 1;
         }
-        for (int i = 0; i > total; i++){
-            insert(i,proc1.parent);
-            insert(i,proc1.name);
-            insert(i,proc1.priority);
-            insert(i,proc1.memory);
-        }
+        insert(0,proc1.parent);
+        insert(0,proc1.name);
+        insert(0,proc1.priority);
+        insert(0,proc1.memory);
     }
 }
