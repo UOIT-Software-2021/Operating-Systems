@@ -1,7 +1,7 @@
 
 
 typedef struct {
-    int arrivalTime, priority, processorTime, memory, printers, scanners, modems, cds, pid;
+    int arrivalTime, priority, processorTime, memory, printers, scanners, modems, cds, pid, address;
 } proc;
 
 //queue structure
