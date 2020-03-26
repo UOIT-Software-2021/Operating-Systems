@@ -9,8 +9,8 @@
 #include <sys/wait.h>
 #include <string.h> 
 #include "queue.h"
+#include "hostd.h"
 
-#define MEMORY 1024
 
 int main(void) {
 
