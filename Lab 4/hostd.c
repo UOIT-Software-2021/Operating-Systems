@@ -47,28 +47,25 @@ int main(void) {
 		if (fscanf(fp, "%d%*c %d%*c %d%*c %d%*c %d%*c %d%*c %d%*c %d\n", &process.arrivalTime, &process.priority, &process.processorTime, &process.memory, &process.printers, &process.scanners, &process.modems, &process.cds) == EOF) {
 			break;
 		}
+
 		//set pid to 0
 		process.pid = 0;
 		//set address to 0
 		process.address = 0;
+		//set suspended to 0
+		process.suspended = 0;
 		//add to appropriate queue
-		switch (process.priority) {
-			case 0:
-				push (&realtime, process);
-				break;
-			case 1:
-				push (&priority1, process);
-				break;
-			case 2:
-				push (&priority2, process);
-				break;
-			default:
-				push (&priority3, process);
-		}
+		pushByQueue(&realtime, &priority1, &priority2, &priority3, process, process.priority);
 	}
 	fclose(fp);
-	
+		
+	realtimeIterate(&realtime, avail_mem, res_avail);
 
+	priorityIterate(&priority1, &priority2, &priority3, avail_mem, res_avail, 1);
+	
+	priorityIterate(NULL, &priority2, &priority3, avail_mem, res_avail, 2);
+	
+ 	priorityIterate(NULL, NULL, &priority3, avail_mem, res_avail, 3);
 	
 	return 0; 
 }
