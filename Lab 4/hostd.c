@@ -12,15 +12,30 @@
 #include "hostd.h"
 
 
-int main(void) {
 
+
+
+resources res_avail;
+
+int main(void) {
+	int avail_mem[MEMORY];
+
+	//use to initialize avail_mem to 0
+    	free_mem(avail_mem, 0, MEMORY, 0);
+	
+	//initialize empty queues	
 	node_t *realtime = NULL;
 	node_t *priority1 = NULL;
 	node_t *priority2 = NULL;
 	node_t *priority3 = NULL;
+	res_avail.printers = 2;
+	res_avail.scanners = 1;
+	res_avail.modems = 1;
+	res_avail.cds = 2;
 	
+
 	FILE *fp;
-	fp = fopen("dispacthlist", "r");
+	fp = fopen("dispatchlist", "r");
 	if (fp == NULL){
 		printf("file error!\n");
 		return 1;
@@ -28,7 +43,8 @@ int main(void) {
 	//read file line by line untile EOF is reached
 	while (1) {
 		proc process;
-		if (fscanf(fp, "%d%*c %d%*c %d%*c %d%*c %d%*c %d%*c %d%*c %d\n", process.arrivalTime, process.priority, process.processorTime, process.memory, process.printers, process.scanners, process.modems, process.cds, process.pid) == EOF) {
+		//read all relevant data from the line in the file
+		if (fscanf(fp, "%d%*c %d%*c %d%*c %d%*c %d%*c %d%*c %d%*c %d\n", &process.arrivalTime, &process.priority, &process.processorTime, &process.memory, &process.printers, &process.scanners, &process.modems, &process.cds) == EOF) {
 			break;
 		}
 		//set pid to 0
@@ -51,6 +67,10 @@ int main(void) {
 		}
 	}
 	fclose(fp);
+	
 
+	
 	return 0; 
 }
+
+
