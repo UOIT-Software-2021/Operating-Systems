@@ -34,7 +34,7 @@ void push(node_t **head, proc process){
 
 proc pop(node_t **head){
 
-    proc process = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+    proc process = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     node_t *nextInQueue = NULL;
     if (*head == NULL){
         //handle empty queue
