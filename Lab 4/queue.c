@@ -10,7 +10,7 @@
 #include "queue.h"
 
 
-void push(node_t **head, proc process){
+void push(node_t **head, proc *process){
     //default push
     if(*head != NULL){
         node_t *next = (*head);
@@ -32,20 +32,47 @@ void push(node_t **head, proc process){
     }
 }
 
-proc pop(node_t **head){
+proc *pop(node_t **head){
 
-    proc process = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    node_t *nextInQueue = NULL;
-    if (*head == NULL){
-        //handle empty queue
-        printf("error: Popping empty queue!\n");
-        return process;
-    }
-    //get next in line
-    nextInQueue = (*head)->next;
-    process = (*head)->data;
-    free(*head);
-    *head = nextInQueue;
+	proc *process = NULL;
+	node_t *nextInQueue = NULL;
+	if (*head == NULL){
+		//handle empty queue
+		printf("error: Popping empty queue!\n");
+		return process;
+	}
+	//get next in line
+	nextInQueue = (*head)->next;
+	process = (*head)->data;
+	free(*head);
+	*head = nextInQueue;
+
+	return process;
+}
+
+proc *peek(node_t **head){
+	proc *process = NULL;
     
-    return process;
+	if (*head == NULL){
+		//handle empty queue
+		printf("error: Popping empty queue!\n");
+		return process;
+	}
+	process = (*head)->data;
+	//return value without removing from queue
+	return process;
+}
+
+int queueSize(node_t **head){
+	if(*head != NULL){
+		node_t *next = (*head);
+		int count = 1;
+		while (next -> next != NULL){
+	    		next = next -> next;
+			count += 1;
+		}
+		return count;
+    	} else {    
+		return 0;              	
+    	}
 }
