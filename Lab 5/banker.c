@@ -70,9 +70,11 @@ int main (int argc, char *argv[]){
 
 	pthread_t tid[NUM_CUSTOMERS];
 	pthread_mutex_init (&mutex, NULL);
-	//continous looping, chose 10 iterations for testing purposes
+	//continous looping
+	char s = 0;
 	int x = 0;	
-	while (x < 10){
+	while (s != 27 && s !=3 && s !=26){
+		
 		int index[NUM_CUSTOMERS];
 		//print available resources at the start of each cycle
 		printf("Cycle: %d\nAvailable: ", x+1);		
@@ -89,6 +91,12 @@ int main (int argc, char *argv[]){
 		for (int i = 0; i < NUM_CUSTOMERS; i++) {
 			pthread_join(tid[i], NULL);
 		}
+		printf("press esc to exit, press any other key to continue...\n");
+		//terrible and dirty solution to get immediate character return, but will only work on linux system
+		system ("/bin/stty raw");
+		s = getchar();
+		system ("/bin/stty cooked");
+
 		printf("\n");
 		x++;
 	}
